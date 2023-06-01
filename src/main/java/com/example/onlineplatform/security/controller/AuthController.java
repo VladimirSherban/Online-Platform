@@ -1,9 +1,9 @@
-package com.example.onlineplatform.controller;
+package com.example.onlineplatform.security.controller;
 
-import com.example.onlineplatform.dto.LoginReq;
-import com.example.onlineplatform.dto.RegisterReq;
-import com.example.onlineplatform.dto.Role;
-import com.example.onlineplatform.service.AuthService;
+import com.example.onlineplatform.security.dto.LoginReq;
+import com.example.onlineplatform.security.dto.RegisterReq;
+import com.example.onlineplatform.security.dto.Role;
+import com.example.onlineplatform.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.onlineplatform.dto.Role.USER;
+import static com.example.onlineplatform.security.dto.Role.USER;
 
 
 @Slf4j

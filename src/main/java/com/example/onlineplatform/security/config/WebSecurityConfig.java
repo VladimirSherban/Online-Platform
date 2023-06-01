@@ -1,4 +1,4 @@
-package com.example.onlineplatform.config;
+package com.example.onlineplatform.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

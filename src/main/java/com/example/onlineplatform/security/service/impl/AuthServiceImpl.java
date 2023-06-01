@@ -1,8 +1,8 @@
-package com.example.onlineplatform.service.impl;
+package com.example.onlineplatform.security.service.impl;
 
-import com.example.onlineplatform.dto.RegisterReq;
-import com.example.onlineplatform.dto.Role;
-import com.example.onlineplatform.service.AuthService;
+import com.example.onlineplatform.security.dto.RegisterReq;
+import com.example.onlineplatform.security.dto.Role;
+import com.example.onlineplatform.security.service.AuthService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
