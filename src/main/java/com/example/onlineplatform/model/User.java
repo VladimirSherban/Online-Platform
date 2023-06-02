@@ -24,29 +24,30 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String email, String password, String firstname, String lastname, String phone, String image) {
+    public User(String email, String password, String firstName, String lastName, String phone, String image) {
         this.email = email;
         this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstname = firstName;
+        this.lastname = lastName;
         this.phone = phone;
         this.image = image;
     }
 
-    public User(String email, String password, String firstname, String lastname, String phone) {
+    public User(String email, String password, String firstName, String lastName, String phone) {
         this.email = email;
         this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstname = firstName;
+        this.lastname = lastName;
         this.phone = phone;
     }
 
-    public User(String email, String password, String firstname, String lastname, String phone, Role role) {
+    public User(String email, String password, String firstName, String lastName, String phone, Role role) {
         this.email = email;
         this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstname = firstName;
+        this.lastname = lastName;
         this.phone = phone;
         this.role = role;
     }
+
 }
