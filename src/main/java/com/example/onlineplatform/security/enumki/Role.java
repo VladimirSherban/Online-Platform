@@ -1,12 +1,13 @@
-package com.example.onlineplatform.security;
+package com.example.onlineplatform.security.enumki;
 
+import com.example.onlineplatform.security.enumki.Permission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.onlineplatform.security.Permission.*;
+import static com.example.onlineplatform.security.enumki.Permission.*;
 
 /**
  * Роли для пользователей. Состоят из набора прав

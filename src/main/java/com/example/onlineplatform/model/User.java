@@ -1,6 +1,6 @@
 package com.example.onlineplatform.model;
 
-import com.example.onlineplatform.security.Role;
+import com.example.onlineplatform.security.enumki.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

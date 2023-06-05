@@ -1,4 +1,4 @@
-package com.example.onlineplatform.security;
+package com.example.onlineplatform.security.enumki;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
