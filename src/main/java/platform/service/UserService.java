@@ -2,7 +2,6 @@ package platform.service;
 
 import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
-import platform.dto.response_wrapper.ResponseWrapperUserDto;
 import platform.exception.ForbiddenException;
 import platform.exception.UserNotFoundException;
 
@@ -25,7 +24,7 @@ public interface UserService {
      * Получение всех пользователей
      * @return ResponseWrapperUserDto
      */
-    ResponseWrapperUserDto getUsers();
+    NewPasswordDto updatePassword(NewPasswordDto newPasswordDto);
     /**
      * Обновление пароля пользователя
      * @param newPasswordDto

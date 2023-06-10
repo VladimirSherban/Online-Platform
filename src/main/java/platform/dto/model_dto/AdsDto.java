@@ -27,5 +27,6 @@ public class AdsDto {
 
     @JsonProperty("image")
     @Valid
-    private List<String> image;
+    private String image;
+
 }

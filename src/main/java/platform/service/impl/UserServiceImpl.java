@@ -1,31 +1,34 @@
 package platform.service.impl;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
-import platform.dto.response_wrapper.ResponseWrapperUserDto;
 import platform.exception.ForbiddenException;
+import platform.exception.RegisterException;
 import platform.exception.UserNotFoundException;
 import platform.mapper.UserMapper;
 import platform.model.User;
 import platform.repository.UserRepository;
 import platform.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
 
-import java.util.List;
 
 /**
  * Сервис для UserController
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final Logger logger;
 
     @Override
     public UserDto findUser(Integer id) {
@@ -39,11 +42,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
-    @Override
-    public ResponseWrapperUserDto getUsers() {
-        List<User> users = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-        return new ResponseWrapperUserDto(users.size(), userMapper.toDtos(users));
-    }
 
     @Override
     public NewPasswordDto setPassword(NewPasswordDto newPasswordDto, String login) {
@@ -56,6 +54,7 @@ public class UserServiceImpl implements UserService {
         return newPasswordDto;
     }
 
+
     @Override
     public UserDto updateUser(UserDto userDto) {
         User updated = findUserByLogin(userDto.getEmail());
@@ -67,11 +66,30 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Поиск сущности User по логину
+     *
      * @param login
-     * @throws UserNotFoundException
      * @return User
      */
     private User findUserByLogin(String login) {
         return userRepository.findFirstByEmail(login).orElseThrow(() -> new UserNotFoundException(login));
     }
+
+    @Override
+    public NewPasswordDto updatePassword(NewPasswordDto newPasswordDto) {
+        logger.info(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userRepository.findFirstByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (passwordEncoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
+            logger.info(userRepository.findFirstByEmail(SecurityContextHolder
+                            .getContext()
+                            .getAuthentication()
+                            .getName()).get()
+                    .getPassword());
+            userRepository.save(user);
+            return newPasswordDto;
+        } else {
+            throw new RegisterException("Incorrect password");
+        }
+    }
+
 }

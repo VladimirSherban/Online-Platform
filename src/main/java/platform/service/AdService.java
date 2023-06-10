@@ -2,15 +2,11 @@ package platform.service;
 
 
 import platform.dto.AdsCreateDto;
-import platform.dto.AdsCriteriaDto;
 import platform.dto.FullAdsDto;
-import platform.dto.SearchQuery;
 import platform.dto.model_dto.AdsDto;
 import platform.dto.response_wrapper.ResponseWrapperAdsDto;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 /**
  * Сервис класс для CRUD операций с объявлением
@@ -80,20 +76,4 @@ public interface AdService {
      */
     byte[] getImageById(String uuid);
 
-    /**
-     * Получение списка объявлений исходя из критериев поиска
-     *
-     * @param adCriteriaDto Параметрв поиска
-     * @param pageable      Объект Pageable
-     * @return Список объявлений
-     */
-    List<AdsDto> getAdsByCriteria(AdsCriteriaDto adCriteriaDto, Pageable pageable);
-
-    /**
-     * Получение списка объявлений исходя из критериев поиска
-     *
-     * @param searchQuery Параметрв поиска
-     * @return Список объявлений
-     */
-    List<FullAdsDto> getByCriteriaTwo(SearchQuery searchQuery, Pageable pageable);
 }

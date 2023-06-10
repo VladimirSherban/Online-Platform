@@ -7,7 +7,6 @@ package platform.api;
 
 import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
-import platform.dto.response_wrapper.ResponseWrapperUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,17 +39,6 @@ public interface UsersApi {
     ResponseEntity<UserDto> getUserUsingGET(
             @Parameter(name = "id", description = "id", required = true) @PathVariable("id") Integer id);
 
-    @Operation(operationId = "getUsersUsingGET", summary = "getUsers", tags = { "Users" }, responses = {
-            @ApiResponse(responseCode = "200",
-                    description = "OK",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ResponseWrapperUserDto.class))),
-            @ApiResponse(responseCode = "400", description = "Access is denied"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "403", description = "Forbidden")
-    })
-    @GetMapping(value = "/users", produces = { "application/json" })
-    ResponseEntity<ResponseWrapperUserDto> getUsersUsingGET();
 
     @Operation(operationId = "getUsersUsingGET", summary = "getUsers", tags = { "Users" }, responses = {
             @ApiResponse(responseCode = "200",
