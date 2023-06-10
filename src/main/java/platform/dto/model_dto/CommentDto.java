@@ -2,10 +2,9 @@ package platform.dto.model_dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+
 
 @Builder
 @Data
@@ -17,9 +16,14 @@ public class CommentDto {
     @JsonProperty("author")
     private Integer author;
 
+    @JsonProperty("authorImage")
+    private String authorImage;
+
+    @JsonProperty("authorFirstName")
+    private String authorFirstName;
+
     @JsonProperty("createdAt")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime createdAt;
+    private String createdAt;
 
     @JsonProperty("text")
     @NotNull

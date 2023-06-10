@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * Обьект для вывода данных при открытии обьявления
  */
@@ -38,5 +36,5 @@ public class FullAdsDto {
     private String description;
 
     @JsonProperty("image")
-    private List<String> images;
+    private String image;
 }

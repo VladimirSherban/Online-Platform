@@ -3,7 +3,6 @@ package platform.controller;
 import platform.api.UsersApi;
 import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
-import platform.dto.response_wrapper.ResponseWrapperUserDto;
 import platform.security.AuthenticationFacade;
 import platform.security.service.PermissionService;
 import platform.service.UserAvatarService;
@@ -44,11 +43,6 @@ public class UserController implements UsersApi, AuthenticationFacade {
         return ResponseEntity.ok(userService.findUser(getLogin()));
     }
 
-    @Override
-    @PreAuthorize("hasAuthority('users.full')")
-    public ResponseEntity<ResponseWrapperUserDto> getUsersUsingGET() {
-        return ResponseEntity.ok(userService.getUsers());
-    }
 
     @Override
     @PreAuthorize("hasAuthority('users.crud')")
