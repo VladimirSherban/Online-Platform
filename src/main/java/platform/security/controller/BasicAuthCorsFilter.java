@@ -1,5 +1,4 @@
-package platform.security;
-import org.jetbrains.annotations.NotNull;
+package platform.security.controller;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -10,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class BasicAuthCorsFilter extends OncePerRequestFilter {
-
+public class BasicAuthCorsFilter extends OncePerRequestFilter{
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest httpServletRequest,
+    protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
         httpServletResponse.addHeader("Access-Control-Allow-Credentials", "true");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
