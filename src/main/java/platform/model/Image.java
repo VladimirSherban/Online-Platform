@@ -18,7 +18,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "data_image")
     @Lob
