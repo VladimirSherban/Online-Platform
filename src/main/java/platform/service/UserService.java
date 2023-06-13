@@ -1,44 +1,22 @@
 package platform.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
-import platform.exception.ForbiddenException;
-import platform.exception.UserNotFoundException;
+import platform.model.User;
+
+import java.io.IOException;
 
 public interface UserService {
-    /**
-     * Поиск пользователя по id
-     * @param id
-     * @throws UserNotFoundException
-     * @return UserDto
-     */
-    UserDto findUser(Integer id);
-    /**
-     * Поиск пользователя по логину
-     * @param login
-     * @throws UserNotFoundException
-     * @return UserDto
-     */
-    UserDto findUser(String login);
-    /**
-     * Получение всех пользователей
-     * @return ResponseWrapperUserDto
-     */
-    NewPasswordDto updatePassword(NewPasswordDto newPasswordDto);
-    /**
-     * Обновление пароля пользователя
-     * @param newPasswordDto
-     * @param login
-     * @throws ForbiddenException
-     * @return NewPasswordDto
-     */
-    NewPasswordDto setPassword(NewPasswordDto newPasswordDto, String login);
-    /**
-     * Обновления профиля пользователя
-     * @param userDto
-     * @throws UserNotFoundException
-     * @return UserDto
-     */
+    User createUser(User user);
+
+
+    UserDto findUser();
+
+
+    void updatePassword(NewPasswordDto newPasswordDto);
+
     UserDto updateUser(UserDto userDto);
 
+    void updateImage(MultipartFile image) throws IOException;
 }

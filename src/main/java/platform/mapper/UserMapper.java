@@ -1,19 +1,20 @@
 package platform.mapper;
 
+import org.modelmapper.PropertyMap;
 import platform.dto.model_dto.UserDto;
 import platform.model.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
-import java.util.List;
+public class UserMapper extends PropertyMap<UserDto, User> {
 
-@Mapper(componentModel = "spring")
-public interface UserMapper extends GenerateLink {
-    @Mapping(target = "image", expression = "java(generateLink(user))")
-    UserDto toDto(User user);
-
-    @Mapping(target = "avatar.uuid", expression = "java(getUUID(userDto))")
-    User toEntity(UserDto userDto);
-
-    List<UserDto> toDtos(List<User> users);
+    @Override
+    protected void configure() {
+        map().setFirstName(source.getFirstName());
+        map().setLastName(source.getLastName());
+        map().setPhone(source.getPhone());
+        map().setEmail(destination.getEmail());
+        map().setRole(destination.getRole());
+        map().setImage(destination.getImage());
+        map().setPassword(destination.getPassword());
+        map().setId(destination.getId());
+    }
 }

@@ -1,94 +1,116 @@
 package platform.service.impl;
 
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import platform.dto.NewPasswordDto;
-import platform.dto.model_dto.UserDto;
-import platform.exception.ForbiddenException;
-import platform.exception.RegisterException;
-import platform.exception.UserNotFoundException;
-import platform.mapper.UserMapper;
-import platform.model.User;
-import platform.repository.UserRepository;
-import platform.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+import platform.dto.NewPasswordDto;
+import platform.dto.model_dto.UserDto;
+import platform.model.User;
+import platform.repository.UserRepository;
+import platform.service.UserService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
-/**
- * Сервис для UserController
- */
-@RequiredArgsConstructor
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final Logger logger;
+    private final PasswordEncoder encoder;
+    private final ModelMapper modelMapper;
 
-    @Override
-    public UserDto findUser(Integer id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(user);
-    }
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Override
-    public UserDto findUser(String login) {
-        User user = userRepository.findFirstByEmail(login).orElseThrow(() -> new UserNotFoundException(login));
-        return userMapper.toDto(user);
-    }
+    @Value("${image.path}")
+    private String imagePath;
+
 
 
     @Override
-    public NewPasswordDto setPassword(NewPasswordDto newPasswordDto, String login) {
-        User user = findUserByLogin(login);
-        if (!passwordEncoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
-            throw new ForbiddenException("Invalid old password");
-        }
-        user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
-        userRepository.save(user);
-        return newPasswordDto;
-    }
-
-
-    @Override
-    public UserDto updateUser(UserDto userDto) {
-        User updated = findUserByLogin(userDto.getEmail());
-        updated.setFirstName(userDto.getFirstName());
-        updated.setLastName(userDto.getLastName());
-        updated.setPhone(userDto.getPhone());
-        return userMapper.toDto(userRepository.save(updated));
-    }
-
-    /**
-     * Поиск сущности User по логину
-     *
-     * @param login
-     * @return User
-     */
-    private User findUserByLogin(String login) {
-        return userRepository.findFirstByEmail(login).orElseThrow(() -> new UserNotFoundException(login));
+    public User createUser(User user) {
+            return userRepository.save(user);
     }
 
     @Override
-    public NewPasswordDto updatePassword(NewPasswordDto newPasswordDto) {
+    public UserDto findUser() {
+        User user = getUser();
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
+
+    @Override
+    public void updatePassword(NewPasswordDto newPasswordDto) {
         logger.info(SecurityContextHolder.getContext().getAuthentication().getName());
         User user = userRepository.findFirstByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (passwordEncoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(newPasswordDto.getNewPassword()));
+        if (encoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(encoder.encode(newPasswordDto.getNewPassword()));
             logger.info(userRepository.findFirstByEmail(SecurityContextHolder
                             .getContext()
                             .getAuthentication()
                             .getName()).get()
                     .getPassword());
             userRepository.save(user);
-            return newPasswordDto;
         } else {
-            throw new RegisterException("Incorrect password");
+            throw new BadCredentialsException("Incorrect password");
+        }
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto) {
+        User user = getUser();
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPhone(userDto.getPhone());
+
+        userRepository.save(user);
+        logger.info(user.toString());
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public void updateImage(MultipartFile image) throws IOException {
+
+        User user = getUser();
+        createPath(imagePath, logger);
+        if (image.getContentType().startsWith("image/")) {
+            String fileName = UUID.randomUUID() + "_" +
+                    image.getOriginalFilename();
+            image.transferTo(new File(imagePath + fileName));
+            user.setImage("\\static\\" + fileName);
+            userRepository.save(user);
+            logger.info(image.getContentType());
+            logger.info(fileName);
+        }
+    }
+
+    private User getUser() {
+        return userRepository.findFirstByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+    }
+    static void createPath(String imagePath, Logger logger) {
+        Path path = Paths.get(imagePath);
+
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+                logger.info("Путь создан: " + path);
+            } catch (IOException e) {
+                logger.error("Не получилось создать путь: " + e.getMessage());
+            }
+        } else {
+            logger.info("Такой путь уже есть: " + path);
         }
     }
 
