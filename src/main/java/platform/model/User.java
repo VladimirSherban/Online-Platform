@@ -20,18 +20,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "password")
     private String password;
+
     @Column(name = "firstName")
     private String firstName;
+
     @Column(name = "lastName")
     private String lastName;
+
     @Column(name = "phone")
     private String phone;
+
+    @OneToOne
     @Column(name = "image")
-    private String image;
+    private Image image;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
