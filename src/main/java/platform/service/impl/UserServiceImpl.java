@@ -91,5 +91,27 @@ public class UserServiceImpl implements UserService {
         return "/users/image/" + userRepository.save(user).getImage().getId();
 
     }
+    @Override
+    public User getUserById(long id) {
+        //чтоб в контроллере вернуть через дто
+        return userRepository.findById(id).orElseThrow();
+
+    }
+
+    @Override
+    public User getUsers(String email) {
+        //вывести по email
+        return userRepository.findFirstByEmail(email).orElseThrow();
+
+    }
+
+    @Override
+    public User updateRole(long id, Role role) {
+        //чтоб в контроллере смогли поставить админку обычному пользователю
+        User user = getUserById(id);
+        user.setRole(role);
+        return userRepository.save(user);
+
+    }
 
 }

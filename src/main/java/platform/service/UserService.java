@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
 import platform.dto.model_dto.UserDto;
 import platform.model.User;
+import platform.security.dto.Role;
 
 public interface UserService {
     /**
@@ -39,4 +40,10 @@ public interface UserService {
      */
     @SneakyThrows
     String updateUserImage(MultipartFile image, String email);
+
+    User getUserById(long id);
+
+    User getUsers(String email);
+
+    User updateRole(long id, Role role);
 }
