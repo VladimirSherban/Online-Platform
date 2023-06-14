@@ -37,7 +37,7 @@ public class User {
     private String phone;
 
     @OneToOne
-    @Column(name = "image")
+    @JoinColumn(name = "image")
     private Image image;
 
     @Column(name = "role")

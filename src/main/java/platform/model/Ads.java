@@ -28,7 +28,7 @@ public class Ads {
     private String title;
 
     @OneToOne
-    @Column(name = "image")
+    @JoinColumn(name = "image")
     private Image image;
 
     @ManyToOne
