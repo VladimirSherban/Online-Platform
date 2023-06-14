@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserDetailsPa
     }
 
     private User getUserByName(String username) {
-        return userRepository.findFirstByEmail(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь по email не найден"));
     }
 

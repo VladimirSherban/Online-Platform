@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(UserDto userDto, String email) throws Exception {
         logger.info("Метод обновления пользователя");
-        User user = userRepository.findFirstByEmail(email).orElseThrow(()-> new Exception("Пользователь не найден"));
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new Exception("Пользователь не найден"));
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public String updateUserImage(MultipartFile image, String email) {
 
         logger.info("Метод замены/загрузки картинки пользователю");
-        User user = userRepository.findFirstByEmail(email).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow();
         user.setImage(imageService.upload(image));
         return "/users/image/" + userRepository.save(user).getImage().getId();
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUsers(String email) {
         //вывести по email
-        return userRepository.findFirstByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElseThrow();
 
     }
 
