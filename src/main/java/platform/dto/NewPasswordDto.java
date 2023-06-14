@@ -1,15 +1,20 @@
 package platform.dto;
-import lombok.Builder;
-import lombok.Data;
 
-import javax.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Builder
-@Data
-@Valid
+/**
+ * Нужен для контроллера Пользователя - метод /set_password
+ */
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
 public class NewPasswordDto {
-
-
     private String currentPassword;
     private String newPassword;
+
 }

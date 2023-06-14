@@ -1,20 +1,47 @@
 package platform.mapper;
 
-import org.modelmapper.PropertyMap;
+import org.apache.ibatis.annotations.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
+import platform.dto.CreateUserDto;
+import platform.dto.RegReqDto;
 import platform.dto.model_dto.UserDto;
+import platform.model.Image;
 import platform.model.User;
 
-public class UserMapper extends PropertyMap<UserDto, User> {
 
-    @Override
-    protected void configure() {
-        map().setFirstName(source.getFirstName());
-        map().setLastName(source.getLastName());
-        map().setPhone(source.getPhone());
-        map().setEmail(destination.getEmail());
-        map().setRole(destination.getRole());
-        map().setImage(destination.getImage());
-        map().setPassword(destination.getPassword());
-        map().setId(destination.getId());
+@Mapper
+public interface UserMapper extends MapperSchema<UserDto, User> {
+
+    CreateUserDto toCreateUserDto(User entity);
+
+    User createUserDtoToEntity(CreateUserDto dto);
+
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", source = "username")
+    @Mapping(target = "password", source = "password")
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "role", defaultValue = "USER")
+    User toEntity(RegReqDto dto);
+
+
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    User toEntity(UserDto dto);
+
+    @Mapping(target = "image", source = "image", qualifiedByName = "imageMapping")
+    UserDto toDto(User entity);
+
+    @Named("imageMapping")
+    default String imageMapping(Image image) {
+        if (image == null) {
+            return "";
+        }
+        return "/user/image/" + image.getId();
+
     }
+
 }

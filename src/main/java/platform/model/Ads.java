@@ -27,14 +27,12 @@ public class Ads {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "image")
-    private String image;
+    @OneToOne
+    @JoinColumn(name = "image")
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User adsAuthor;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ad")
-    @ToString.Exclude
-    private List<Comment> comments;
 }

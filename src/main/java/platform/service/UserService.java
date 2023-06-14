@@ -1,22 +1,49 @@
 package platform.service;
 
+
+import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
-import platform.dto.NewPasswordDto;
 import platform.dto.model_dto.UserDto;
 import platform.model.User;
-
-import java.io.IOException;
+import platform.security.dto.Role;
 
 public interface UserService {
-    User createUser(User user);
+    /**
+     *
+     * @param user
+     * @return {@link User}
+     */
+    User addUser(User user);
 
+    /**
+     *
+     * @param newPassword
+     * @param currentPassword
+     */
 
-    UserDto findUser();
+    void updatePassword(String newPassword, String currentPassword);
 
+    /**
+     *
+     * @param userDto
+     * @param email
+     * @return {@link User}
+     * @throws Exception
+     */
+    User updateUser(UserDto userDto, String email) throws Exception;
 
-    void updatePassword(NewPasswordDto newPasswordDto);
+    /**
+     *
+     * @param image
+     * @param email
+     * @return Ссылка картинки
+     */
+    @SneakyThrows
+    String updateUserImage(MultipartFile image, String email);
 
-    UserDto updateUser(UserDto userDto);
+    User getUserById(long id);
 
-    void updateImage(MultipartFile image) throws IOException;
+    User getUsers(String email);
+
+    User updateRole(long id, Role role);
 }
