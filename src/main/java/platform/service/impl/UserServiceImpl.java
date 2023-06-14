@@ -50,8 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) {
-        if (userRepository.existByEmail(user.getEmail())) {
-            throw new ValidationException("Пользователь с таким email уже существует");
+        if (userRepository.existsByEmailContains(user.getEmail())) {
+            //  throw new ValidationException("Пользователь с таким email уже существует");
         }
         if (user.getRole() == null) {
             //если не назначили пользователю роль

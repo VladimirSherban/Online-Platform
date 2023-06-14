@@ -9,5 +9,5 @@ import java.util.Collection;
 
 @Repository
 public interface AdsRepository extends JpaRepository<Ads, Integer>, JpaSpecificationExecutor<Ads> {
-    Collection<Ads> findAllByUserId(int id);
+    Collection<Ads> findAllByAdsAuthorId(int id);
 }
