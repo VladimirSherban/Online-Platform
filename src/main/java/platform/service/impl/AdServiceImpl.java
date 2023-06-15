@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import platform.dto.AdCreateDto;
 import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
+import platform.model.User;
 import platform.repository.AdsCommentRepository;
 import platform.repository.AdsRepository;
 import platform.repository.ImageRepository;
@@ -29,6 +31,7 @@ import static platform.security.service.impl.SecurityUtils.checkPermissionToAds;
 @Service
 @RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
+    //Логгер - для отладки. Будет выводить на панель то, что написано в инфо при запуске метода
     private final Logger logger = LoggerFactory.getLogger(AdServiceImpl.class);
     private final AdsRepository adRepository;
     private final AdsCommentRepository commentRepository;
@@ -49,8 +52,8 @@ public class AdServiceImpl implements AdService {
     @Override
     public void updateAdsImage(int id, MultipartFile image) {
 
-        logger.info("Метод");
-//        Ads ads = adRepository.findById(id);
+        logger.info("Метод обновления картинки у Объявления по его id");
+//        Ads ads = adRepository.findById(id); не получилось, жаль этого добряка...
         Ads ads = getAdsById(id);
         checkPermissionToAds(ads);
         imageRepository.delete(ads.getImage());
@@ -67,5 +70,19 @@ public class AdServiceImpl implements AdService {
                         HttpStatus.NOT_FOUND, "The ad was not found"));
 
     }
+
+    @SneakyThrows  //используем для скрытия исключений, где есть MultipartFile
+    @Override
+    public Ads addAds(AdCreateDto adCreateDto, MultipartFile adsImage, String Email) {
+
+        logger.info("Метод добавления объявлений");
+        User user = userRepository.findByEmail(Email).orElseThrow(() -> new Exception("Пользователь с таким email не найден"));
+        Ads ads = adMapper.toEntity(adCreateDto);
+        ads.setAdsAuthor(user);
+        ads.setImage(imageService.upload(adsImage));
+        return adRepository.save(ads);
+
+    }
+
 
 }
