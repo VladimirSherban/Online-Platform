@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
 import platform.dto.AdCreateDto;
 import platform.dto.FullAdDto;
+import platform.dto.model_dto.CommentDto;
 import platform.model.Ads;
 import platform.model.Comment;
 
@@ -64,4 +65,50 @@ public interface AdService {
      * @return
      */
     Comment getAdsComment(int adPk, int id);
+
+    /**
+     * Обновить Объявление
+     * @param adId
+     * @param adCreateDto
+     * @return {@link Ads}
+     */
+
+    Ads updateAds(int adId, AdCreateDto adCreateDto);
+
+    /**
+     * Удаление объявления по id
+     * @param adId
+     * @return {@link Ads}
+     */
+
+    Ads deleteAdsById(int adId);
+
+    /**
+     * Удалить коментарий по id
+     * @param adPk
+     * @param id
+     * @return {@link Comment}
+     */
+
+    Comment deleteComment(int adPk, int id);
+
+    /**
+     * Редактирование комментария по id
+     * @param adPk
+     * @param id
+     * @param commentUpdated
+     * @return {@link Comment}
+     */
+
+    Comment updateComment(int adPk, int id, Comment commentUpdated);
+
+    /**
+     * Добавление нового комментария
+     * @param adPk
+     * @param adCommentDto
+     * @param Email
+     * @return {@link Comment}
+     * @throws Exception
+     */
+    Comment addComment(int adPk, CommentDto adCommentDto, String Email) throws Exception;
 }

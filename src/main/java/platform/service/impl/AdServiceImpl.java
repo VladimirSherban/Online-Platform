@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import platform.dto.AdCreateDto;
 import platform.dto.FullAdDto;
+import platform.dto.model_dto.CommentDto;
 import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
@@ -24,9 +25,11 @@ import platform.service.AdService;
 import platform.service.ImageService;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Collection;
 
 import static platform.security.service.impl.SecurityUtils.checkPermissionToAds;
+import static platform.security.service.impl.SecurityUtils.checkPermissionToComment;
 
 
 @Transactional
@@ -118,6 +121,64 @@ public class AdServiceImpl implements AdService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("Ad %d " +
                                 "belonging to an ad with id %d not found", id, adPk)));
+
+    }
+
+    @Override
+    public Ads updateAds(int adId, AdCreateDto adCreateDto) {
+
+        logger.info("Метод обновления объявления");
+        Ads ads = getAdsById(adId);
+        checkPermissionToAds(ads);
+        ads.setTitle(adCreateDto.getTitle());
+        ads.setDescription(adCreateDto.getDescription());
+        ads.setPrice(adCreateDto.getPrice());
+        return adRepository.save(ads);
+
+    }
+    @Override
+    public Ads deleteAdsById(int adId) {
+
+        logger.info("Метод удаления объявления по id");
+        Ads ads = getAdsById(adId);
+        checkPermissionToAds(ads);
+        commentRepository.deleteCommentByAdId(adId);
+        adRepository.delete(ads);
+        return ads;
+
+    }
+
+    @Override
+    public Comment deleteComment(int adPk, int id) {
+
+        logger.info("Метод удаления комментария по id");
+        Comment comment = getAdsComment(adPk, id);
+        checkPermissionToComment(comment);
+        commentRepository.delete(comment);
+        return comment;
+
+    }
+
+    @Override
+    public Comment updateComment(int adPk, int id, Comment commentUpdated) {
+
+        logger.info("Метод редоктирования комментария по id");
+        Comment comment = getAdsComment(adPk, id);
+        checkPermissionToComment(comment);
+        comment.setText(commentUpdated.getText());
+        return commentRepository.save(comment);
+
+    }
+
+    @Override
+    public Comment addComment(int adPk, CommentDto adCommentDto, String Email) throws Exception {
+
+        User user = userRepository.findByEmail(Email).orElseThrow(() -> new Exception("User not found"));
+        Comment comment = commentMapper.toEntity(adCommentDto);
+        comment.setCommentAuthor(user);
+        comment.setAd(adRepository.findById(adPk).orElseThrow(() -> new Exception("Ad not found")));
+        comment.setCreatedAt(String.valueOf(Instant.now()));
+        return commentRepository.save(comment);
 
     }
 

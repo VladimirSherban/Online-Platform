@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import platform.dto.model_dto.CommentDto;
 import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
+import platform.model.Comment;
 import platform.repository.AdsRepository;
 import platform.service.AdService;
 import platform.service.ImageService;
@@ -38,8 +40,6 @@ public class AdController {
     private final AdMapper adMapper;
     private final AdCommentMapper commentMapper;
     private final ImageService imageService;
-    private final AdsRepository adsRepository;
-
 
 
     @Operation(summary = "Показать все объявления",
@@ -77,6 +77,7 @@ public class AdController {
         adservice.updateAdsImage(id, image);
         return ResponseEntity.ok().build();
     }
+
     @Operation(summary = "Показать объявления авторизованного пользователя", operationId = "getMyAds",
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(
@@ -130,8 +131,26 @@ public class AdController {
             }, tags = "ADS")
     @GetMapping("/{ad_pk}/comments/{id}")
     public ResponseEntity<CommentDto> getAdsComment(@PathVariable("ad_pk") int ad_pk,
-                                                      @PathVariable("id") int id) {
+                                                    @PathVariable("id") int id) {
         return ResponseEntity.ok(commentMapper.toDto(adservice.getAdsComment(ad_pk, id)));
+    }
+
+    @Operation(summary = "Создание нового комментария к объявлению", operationId = "addAdsComment",
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.ALL_VALUE,
+                            schema = @Schema(implementation = CommentDto.class))),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @PostMapping("/{ad_pk}/comments")
+    public ResponseEntity<CommentDto> addAdsComment(@PathVariable("ad_pk") int adPk,
+                                                      @RequestBody @Valid CommentDto adCommentDto) throws Exception {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(commentMapper.toDto(adservice.addComment(adPk, adCommentDto, authentication.getName())));
+
     }
 
     @Operation(summary = "Получить картинку по id", operationId = "getAdsImage",
@@ -148,7 +167,80 @@ public class AdController {
         return ResponseEntity.ok(imageService.getImageById(id).getImage());
     }
 
+    @Operation(summary = "Сменить картинку объявления по id", operationId = "updateImage",
+            responses = {@ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
+        adservice.updateAdsImage(id, image);
+        return ResponseEntity.ok().build();
 
+    }
+
+
+
+
+    @Operation(summary = "Редактировать Объявление по id", operationId = "updateAds",
+            responses = {@ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(
+                            mediaType = MediaType.ALL_VALUE,
+                            schema = @Schema(implementation = Ads.class))),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @PatchMapping("/{adId}")
+    public ResponseEntity<AdsDto> updateAds(@PathVariable("adId") Integer adId, @RequestBody AdCreateDto adCreateDto) {
+
+        return ResponseEntity.ok(adMapper.toDto(adservice.updateAds(adId, adCreateDto)));
+
+    }
+
+    @Operation(summary = "Удаление объявления по id", operationId = "deleteAds",
+            responses = {@ApiResponse(responseCode = "204", description = "No Content", content = {}),
+                    @ApiResponse(responseCode = "401",
+                            description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+            }, tags = "ADS")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAds(@PathVariable("id") int adId) {
+        adservice.deleteAdsById(adId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Удалить комментарий по id", operationId = "deleteComment",
+            responses = {@ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @DeleteMapping("/{ad_pk}/comments/{id}")
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable("ad_pk") int ad_pk,
+                                                       @PathVariable("id") int id) {
+        adservice.deleteComment(ad_pk, id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Редактирование комментария по id", operationId = "updateComment",
+            responses = {@ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(
+                            mediaType = MediaType.ALL_VALUE,
+                            schema = @Schema(implementation = Comment.class))),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @PatchMapping("/{ad_pk}/comments/{id}")
+    public ResponseEntity<CommentDto> updateComments(@PathVariable("ad_pk") int adPk,
+                                                     @PathVariable int id,
+                                                     @RequestBody CommentDto adCommentDto) {
+        return ResponseEntity.ok(commentMapper.toDto(adservice.updateComment(
+                adPk, id, commentMapper.toEntity(adCommentDto))));
+
+    }
 
 
 
