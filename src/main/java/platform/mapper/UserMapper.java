@@ -3,7 +3,6 @@ package platform.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.stereotype.Component;
 import platform.dto.CreateUserDto;
 import platform.dto.RegReqDto;
 import platform.dto.model_dto.UserDto;

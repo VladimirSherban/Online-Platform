@@ -1,19 +1,24 @@
 package platform.security;
-import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import platform.mapper.UserMapper;
+
+import javax.sql.DataSource;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class WebSecurityConfig {
+    @Autowired
+    private DataSource dataSource;
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -21,40 +26,46 @@ public class WebSecurityConfig {
             "/v3/api-docs",
             "/webjars/**",
             "/login",
-            "/register"
+            "/register",
+            "/ads"
     };
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user =
-                User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
-                        .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
-                        .roles("USER")
-                        .build();
-        return new InMemoryUserDetailsManager(user);
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Primary
+    @Bean
+    public AuthenticationManagerBuilder authenticationManagerBuilder_(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery(
+                        "select email as username, password, 'true' from users where email=?")
+                .authoritiesByUsernameQuery(
+                        "select email as username, authority from users where email=?");
+
+        return auth;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf()
+        http
+                .csrf()
                 .disable()
-                .authorizeHttpRequests(
-                        (authorization) ->
-                                authorization
-                                        .mvcMatchers(AUTH_WHITELIST)
-                                        .permitAll()
-                                        .mvcMatchers("/ads/**", "/users/**")
-                                        .authenticated())
+                .authorizeHttpRequests((authz) ->
+                        authz
+                                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                                .mvcMatchers(AUTH_WHITELIST).permitAll()
+                                .mvcMatchers(
+                                        "/ads/**",
+                                        "/users/**"
+                                )
+                                .authenticated()
+                )
+                .httpBasic(withDefaults())
                 .cors()
-                .disable()
-                .httpBasic(withDefaults());
+        ;
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
