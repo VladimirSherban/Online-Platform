@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import platform.dto.AdCreateDto;
+import platform.dto.FullAdDto;
 import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
+import platform.model.Comment;
 import platform.model.User;
 import platform.repository.AdsCommentRepository;
 import platform.repository.AdsRepository;
@@ -86,9 +88,36 @@ public class AdServiceImpl implements AdService {
     @Override
     public Collection<Ads> getMyAds(String Email) {
 
-        logger.info("Current Method is - getAdsMe");
+        logger.info("Метод получения объявлений авторизованного пользователя");
         User user = userRepository.findByEmail(Email).orElseThrow();
         return adRepository.findAllByAdsAuthorId(user.getId());
+
+    }
+
+    @Override
+    public FullAdDto getFullAd(int id) throws Exception {
+
+        logger.info("Метод получения full ad");
+        return adMapper.toFullAdsDto(adRepository.findById(id).orElseThrow(() -> new Exception("Объявление не найдено")));
+
+    }
+
+    @Override
+    public Collection<Comment> getComments(int adPk) {
+
+        logger.info("Метод получения комментариев");
+        return commentRepository.findAllByAdId(adPk);
+
+    }
+
+    @Override
+    public Comment getAdsComment(int adPk, int id) {
+
+        logger.info("Метод получения комментария по id");
+        return commentRepository.findByIdAndAdId(id, adPk)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Ad %d " +
+                                "belonging to an ad with id %d not found", id, adPk)));
 
     }
 
