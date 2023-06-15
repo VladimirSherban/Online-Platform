@@ -1,6 +1,7 @@
 package platform.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import platform.dto.AdCreateDto;
+import platform.dto.ResponseWrapper;
 import platform.dto.model_dto.AdsDto;
 import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
@@ -37,15 +39,21 @@ public class AdController {
 
 
 
-//    @GetMapping
-//    public ResponseEntity<List<AdsDto>> getAllAds() {
-//        List<Ads> adsDtos =(List<Ads>) adservice.getAllAds();
-//        return new ResponseEntity<List<AdsDto>>(HttpStatus.OK);
-//  не вышло, подумать ещё
-//    }
+    @Operation(summary = "Показать все объявления",
+            operationId = "getAllAds",
+            responses = {@ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(
+                            mediaType = MediaType.ALL_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = Ads.class))))
+            },
+            tags = "ADS")
+    @GetMapping
+    public ResponseWrapper<AdsDto> getAllAds() {
+        return ResponseWrapper.of(adMapper.toDto(adservice.getAllAds()));
+    }
 
 
-    @Operation(summary = "Add new AD", operationId = "addAds",
+    @Operation(summary = "Добавить новое объявление", operationId = "addAds",
             responses = {@ApiResponse(responseCode = "201", description = "Created",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -65,6 +73,20 @@ public class AdController {
     public ResponseEntity<?> updateAdsImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
         adservice.updateAdsImage(id, image);
         return ResponseEntity.ok().build();
+    }
+    @Operation(summary = "Show my ads", operationId = "getMyAds",
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.ALL_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = Ads.class)))),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
+    @GetMapping("/my")
+    public ResponseWrapper<AdsDto> getMyAds() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseWrapper.of(adMapper.toDto(adservice.getMyAds(authentication.getName())));
     }
 
 

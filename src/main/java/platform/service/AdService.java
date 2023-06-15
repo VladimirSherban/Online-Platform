@@ -19,22 +19,23 @@ public interface AdService {
     @SneakyThrows
     void updateAdsImage(int id, MultipartFile image);
 
-    /**
-     * Ищем объявление по его id
-     * @param adsId
-     * @return {@link Ads}
-     */
-
-    Ads getAdsById(int adsId);
 
     /**
      * Метод добавления объявления
      * @param adCreateDto
      * @param adsImage
      * @param Email
-     * @return
+     * @return {@link Ads}
      */
 
     @SneakyThrows
     Ads addAds(AdCreateDto adCreateDto, MultipartFile adsImage, String Email);
+
+    /**
+     * Показывает объявления авторизованного польхователя
+     * @param Email
+     * @return Collection<Ads>
+     * </Ads>
+     */
+    Collection<Ads> getMyAds(String Email);
 }

@@ -61,8 +61,7 @@ public class AdServiceImpl implements AdService {
         adRepository.save(ads);
 
     }
-    @Override
-    public Ads getAdsById(int adsId) {
+    private Ads getAdsById(int adsId) {
 
         logger.info("Метод получения объявления по id");
         return adRepository.findById(adsId).orElseThrow(
@@ -81,6 +80,15 @@ public class AdServiceImpl implements AdService {
         ads.setAdsAuthor(user);
         ads.setImage(imageService.upload(adsImage));
         return adRepository.save(ads);
+
+    }
+
+    @Override
+    public Collection<Ads> getMyAds(String Email) {
+
+        logger.info("Current Method is - getAdsMe");
+        User user = userRepository.findByEmail(Email).orElseThrow();
+        return adRepository.findAllByAdsAuthorId(user.getId());
 
     }
 
