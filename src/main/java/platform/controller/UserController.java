@@ -92,7 +92,7 @@ public class UserController {
                     )
             }, tags = "USER"
     )
-    @PostMapping("/update_password")
+    @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDto> updatePassword(@RequestBody NewPasswordDto newPasswordDto) {
         userService.updatePassword(newPasswordDto.getNewPassword(), newPasswordDto.getCurrentPassword());
         return ResponseEntity.ok(newPasswordDto);

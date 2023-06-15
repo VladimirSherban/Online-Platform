@@ -135,7 +135,7 @@ public class AdController {
         return ResponseEntity.ok(commentMapper.toDto(adservice.getAdsComment(ad_pk, id)));
     }
 
-    @Operation(summary = "Создание нового комментария к объявлению", operationId = "addAdsComment",
+    @Operation(summary = "Создание нового комментария к объявлению", operationId = "addComment",
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.ALL_VALUE,
@@ -145,7 +145,7 @@ public class AdController {
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @PostMapping("/{ad_pk}/comments")
-    public ResponseEntity<CommentDto> addAdsComment(@PathVariable("ad_pk") int adPk,
+    public ResponseEntity<CommentDto> addComment(@PathVariable("ad_pk") int adPk,
                                                       @RequestBody @Valid CommentDto adCommentDto) throws Exception {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -167,20 +167,18 @@ public class AdController {
         return ResponseEntity.ok(imageService.getImageById(id).getImage());
     }
 
-    @Operation(summary = "Сменить картинку объявления по id", operationId = "updateImage",
+    @Operation(summary = "Сменить картинку объявления по id", operationId = "updateAdImage",
             responses = {@ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "404",
                             description = "Not Found"),
                     @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
+    @PatchMapping(value = "/{id}/image-update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateAdImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
         adservice.updateAdsImage(id, image);
         return ResponseEntity.ok().build();
 
     }
-
-
 
 
     @Operation(summary = "Редактировать Объявление по id", operationId = "updateAds",
@@ -210,6 +208,7 @@ public class AdController {
         adservice.deleteAdsById(adId);
         return ResponseEntity.ok().build();
     }
+
 
     @Operation(summary = "Удалить комментарий по id", operationId = "deleteComment",
             responses = {@ApiResponse(responseCode = "200", description = "OK"),
