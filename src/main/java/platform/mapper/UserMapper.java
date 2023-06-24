@@ -10,7 +10,7 @@ import platform.model.Image;
 import platform.model.User;
 
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper extends MapperSchema<UserDto, User> {
 
     CreateUserDto toCreateUserDto(User entity);

@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import platform.dto.model_dto.CommentDto;
 import platform.model.Comment;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdCommentMapper  extends MapperSchema<CommentDto, Comment>{
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "id", source="pk")

@@ -1,10 +1,12 @@
 package platform.service.impl;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +48,8 @@ public class AdServiceImpl implements AdService {
     private final ImageService imageService;
     private final AdMapper adMapper;
     private final AdCommentMapper commentMapper;
+
+
 
     @Override
     public Collection<Ads> getAllAds() {

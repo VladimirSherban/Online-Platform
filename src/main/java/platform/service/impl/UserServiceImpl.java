@@ -19,7 +19,6 @@ import platform.service.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import javax.validation.ValidationException;
 
 import static platform.security.service.impl.SecurityUtils.getUserDetailsFromContext;
 

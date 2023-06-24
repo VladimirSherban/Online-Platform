@@ -10,7 +10,7 @@ import platform.dto.model_dto.AdsDto;
 import platform.model.Ads;
 import platform.model.Image;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdMapper extends MapperSchema<AdsDto, Ads>{
 
     @Mapping(target = "id", source = "pk")
