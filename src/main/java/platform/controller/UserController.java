@@ -140,6 +140,19 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @Operation(summary = "Обновить картинку польпозателя", operationId = "UpdateImageById", responses = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Image is updated"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found"
+            )}, tags = "USER")
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getImageById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(imageService.getImageById(id).getImage());
+    }
 
 
 }

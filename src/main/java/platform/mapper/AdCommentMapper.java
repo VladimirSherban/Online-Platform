@@ -15,5 +15,7 @@ public interface AdCommentMapper  extends MapperSchema<CommentDto, Comment>{
     @Mapping(target = "author", source = "author.id")
     @Mapping(source = "id", target = "pk")
     @Mapping(target = "createdAt", source = "entity.createdAt")
+    @Mapping(target = "authorImage", source = "image")
+    @Mapping(target = "authorFirstName", source = "author.firstName")
     CommentDto toDto(Comment entity);
 }
