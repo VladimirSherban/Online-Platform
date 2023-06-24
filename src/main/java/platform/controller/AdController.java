@@ -23,7 +23,6 @@ import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
 import platform.model.Comment;
-import platform.repository.AdsRepository;
 import platform.service.AdService;
 import platform.service.ImageService;
 
