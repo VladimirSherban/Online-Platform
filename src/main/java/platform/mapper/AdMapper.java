@@ -1,9 +1,9 @@
 package platform.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.web.bind.annotation.RequestMapping;
 import platform.dto.AdCreateDto;
 import platform.dto.FullAdDto;
 import platform.dto.model_dto.AdsDto;
