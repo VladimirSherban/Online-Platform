@@ -26,6 +26,7 @@ import platform.service.ImageService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static platform.security.service.impl.SecurityUtils.checkPermissionToAds;
@@ -177,7 +178,7 @@ public class AdServiceImpl implements AdService {
         Comment comment = commentMapper.toEntity(adCommentDto);
         comment.setCommentAuthor(user);
         comment.setAd(adRepository.findById(adPk).orElseThrow(() -> new Exception("Ad not found")));
-        comment.setCreatedAt(String.valueOf(Instant.now()));
+        comment.setCreatedAt(LocalDateTime.now());
         return commentRepository.save(comment);
 
     }

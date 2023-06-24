@@ -39,7 +39,7 @@ public interface UserMapper extends MapperSchema<UserDto, User> {
         if (image == null) {
             return "";
         }
-        return "/user/image/" + image.getId();
+        return "/users/image/" + image.getId();
 
     }
 
