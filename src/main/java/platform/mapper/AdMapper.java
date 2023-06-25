@@ -13,10 +13,10 @@ import platform.model.Image;
 @Mapper(componentModel = "spring")
 public interface AdMapper {
 
-    @Mapping(target = "id", source = "pk")
-    @Mapping(target = "author", source = "adsAuthor")
-    @Mapping(target = "image", ignore = true)
-    Ads toEntity(AdsDto dto);
+//    @Mapping(target = "id", source = "pk")
+//    @Mapping(target = "author", source = "adsAuthor.id")
+//    @Mapping(target = "image", ignore = true)
+//    Ads toEntity(AdsDto dto);
 
     @Mapping(target = "pk", source = "id")
     @Mapping(target = "author", source = "adsAuthor.id")
@@ -32,7 +32,7 @@ public interface AdMapper {
     @Mapping(target = "authorLastName", source = "adsAuthor.lastName")
     @Mapping(target = "phone", source = "adsAuthor.phone")
     @Mapping(target = "email", source = "adsAuthor.email")
-    @Mapping(target = "image", source = "adsAuthor.image", qualifiedByName = "imageMapping")
+//    @Mapping(target = "image", source = "adsAuthor.image", qualifiedByName = "imageMapping")
     @Mapping(target = "pk", source = "id")
     FullAdDto toFullAdsDto(Ads entity);
 

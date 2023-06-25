@@ -238,7 +238,4 @@ public class AdController {
                 adPk, id, commentMapper.toEntity(adCommentDto))));
 
     }
-
-
-
 }
