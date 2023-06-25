@@ -33,7 +33,6 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/ads")
-
 public class AdController {
     private final AdService adservice;
     private final AdMapper adMapper;
@@ -51,7 +50,7 @@ public class AdController {
             tags = "ADS")
     @GetMapping
     public ResponseWrapper<AdsDto> getAllAds() {
-        return ResponseWrapper.of(adMapper.toDto(adservice.getAllAds()));
+        return ResponseWrapper.of(adservice.getAllAds().stream().map(adMapper::toDto).toList());
     }
 
 
@@ -89,7 +88,7 @@ public class AdController {
     @GetMapping("/me")
     public ResponseWrapper<AdsDto> getMyAds() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseWrapper.of(adMapper.toDto(adservice.getMyAds(authentication.getName())));
+        return ResponseWrapper.of(adservice.getMyAds(authentication.getName()).stream().map(adMapper::toDto).toList());
     }
 
 
@@ -117,7 +116,7 @@ public class AdController {
                             description = "Not Found")}, tags = "ADS")
     @GetMapping("/{ad_pk}/comments")
     public ResponseWrapper<CommentDto> getComments(@PathVariable("ad_pk") int adPk) {
-        return ResponseWrapper.of(commentMapper.toDto(adservice.getComments(adPk)));
+        return ResponseWrapper.of(adservice.getComments(adPk).stream().map(commentMapper::toDto).toList());
     }
 
     @Operation(summary = "Получить комментарии по id", operationId = "getAdsComment",

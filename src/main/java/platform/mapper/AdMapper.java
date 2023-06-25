@@ -11,7 +11,7 @@ import platform.model.Ads;
 import platform.model.Image;
 
 @Mapper(componentModel = "spring")
-public interface AdMapper extends MapperSchema<AdsDto, Ads>{
+public interface AdMapper {
 
     @Mapping(target = "id", source = "pk")
     @Mapping(target = "author.id", source = "author")

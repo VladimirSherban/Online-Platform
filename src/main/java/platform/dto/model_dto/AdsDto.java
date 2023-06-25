@@ -1,9 +1,6 @@
 package platform.dto.model_dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
-import javax.validation.Valid;
 
 @Getter
 @Setter
