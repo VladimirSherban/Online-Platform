@@ -9,15 +9,15 @@ import platform.model.Comment;
 
 @Mapper(componentModel = "spring")
 public interface AdCommentMapper{
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "commentAuthor", ignore = true)
     @Mapping(target = "id", source="pk")
     @Mapping(target = "createdAt", ignore = true)
     Comment toEntity(CommentDto dto);
 
-    @Mapping(target = "author", source = "author.id")
+    @Mapping(target = "author", source = "ad.adsAuthor")
     @Mapping(source = "id", target = "pk")
     @Mapping(target = "createdAt", source = "entity.createdAt")
-    @Mapping(target = "authorImage", source = "author.image")
-    @Mapping(target = "authorFirstName", source = "author.firstName")
+    @Mapping(target = "authorImage", source = "commentAuthor.image")
+    @Mapping(target = "authorFirstName", source = "commentAuthor.firstName")
     CommentDto toDto(Comment entity);
 }
