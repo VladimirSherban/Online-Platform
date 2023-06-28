@@ -9,14 +9,12 @@ import platform.security.dto.Role;
 
 public interface UserService {
     /**
-     *
      * @param user
      * @return {@link User}
      */
     User addUser(User user);
 
     /**
-     *
      * @param newPassword
      * @param currentPassword
      */
@@ -24,7 +22,6 @@ public interface UserService {
     void updatePassword(String newPassword, String currentPassword);
 
     /**
-     *
      * @param userDto
      * @param email
      * @return {@link User}
@@ -33,7 +30,6 @@ public interface UserService {
     User updateUser(UserDto userDto, String email) throws Exception;
 
     /**
-     *
      * @param image
      * @param email
      * @return Ссылка картинки

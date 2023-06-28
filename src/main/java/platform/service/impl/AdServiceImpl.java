@@ -1,12 +1,9 @@
 package platform.service.impl;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,17 +20,13 @@ import platform.repository.AdsCommentRepository;
 import platform.repository.AdsRepository;
 import platform.repository.ImageRepository;
 import platform.repository.UserRepository;
+import platform.security.service.impl.SecurityUtils;
 import platform.service.AdService;
 import platform.service.ImageService;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
-
-import static platform.security.service.impl.SecurityUtils.checkPermissionToAds;
-import static platform.security.service.impl.SecurityUtils.checkPermissionToComment;
-
 
 @Transactional
 @Service
@@ -48,7 +41,7 @@ public class AdServiceImpl implements AdService {
     private final ImageService imageService;
     private final AdMapper adMapper;
     private final AdCommentMapper commentMapper;
-
+    private final SecurityUtils securityUtils;
 
 
     @Override
@@ -65,12 +58,13 @@ public class AdServiceImpl implements AdService {
         logger.info("Метод обновления картинки у Объявления по его id");
 //        Ads ads = adRepository.findById(id); не получилось, жаль этого добряка...
         Ads ads = getAdsById(id);
-        checkPermissionToAds(ads);
+        securityUtils.checkPermissionToAds(ads);
         imageRepository.delete(ads.getImage());
         ads.setImage(imageService.upload(image));
         adRepository.save(ads);
 
     }
+
     private Ads getAdsById(int adsId) {
 
         logger.info("Метод получения объявления по id");
@@ -134,19 +128,20 @@ public class AdServiceImpl implements AdService {
 
         logger.info("Метод обновления объявления");
         Ads ads = getAdsById(adId);
-        checkPermissionToAds(ads);
+        securityUtils.checkPermissionToAds(ads);
         ads.setTitle(adCreateDto.getTitle());
         ads.setDescription(adCreateDto.getDescription());
         ads.setPrice(adCreateDto.getPrice());
         return adRepository.save(ads);
 
     }
+
     @Override
     public Ads deleteAdsById(int adId) {
 
         logger.info("Метод удаления объявления по id");
         Ads ads = getAdsById(adId);
-        checkPermissionToAds(ads);
+        securityUtils.checkPermissionToAds(ads);
         commentRepository.deleteCommentByAdId(adId);
         adRepository.delete(ads);
         return ads;
@@ -158,7 +153,7 @@ public class AdServiceImpl implements AdService {
 
         logger.info("Метод удаления комментария по id");
         Comment comment = getAdsComment(adPk, id);
-        checkPermissionToComment(comment);
+        securityUtils.checkPermissionToComment(comment);
         commentRepository.delete(comment);
         return comment;
 
@@ -169,7 +164,7 @@ public class AdServiceImpl implements AdService {
 
         logger.info("Метод редоктирования комментария по id");
         Comment comment = getAdsComment(adPk, id);
-        checkPermissionToComment(comment);
+        securityUtils.checkPermissionToComment(comment);
         comment.setText(commentUpdated.getText());
         return commentRepository.save(comment);
 
@@ -186,6 +181,4 @@ public class AdServiceImpl implements AdService {
         return commentRepository.save(comment);
 
     }
-
-
 }

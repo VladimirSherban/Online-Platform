@@ -9,18 +9,28 @@ import platform.dto.FullAdDto;
 import platform.dto.model_dto.AdsDto;
 import platform.model.Ads;
 import platform.model.Image;
+import platform.model.User;
 
 @Mapper(componentModel = "spring")
 public interface AdMapper {
 
-//    @Mapping(target = "id", source = "pk")
-//    @Mapping(target = "author", source = "adsAuthor.id")
-//    @Mapping(target = "image", ignore = true)
-//    Ads toEntity(AdsDto dto);
+    @Mapping(target = "id", source = "pk")
+    @Mapping(target = "adsAuthor", source = "author", qualifiedByName = "userFromId")
+    @Mapping(target = "image", ignore = true)
+    Ads toEntity(AdsDto dto);
+
+    @Named("userFromId")
+    default User userFromId(int authorId) {
+        User user = new User();
+        user.setId(authorId);
+        return user;
+    }
+
 
     @Mapping(target = "pk", source = "id")
     @Mapping(target = "author", source = "adsAuthor.id")
     @Mapping(target = "image", source = "entity.image", qualifiedByName = "imageMapping")
+//    @Mapping(target = "description", ignore = true)
     AdsDto toDto(Ads entity);
 
     @Mapping(target = "id", ignore = true)
@@ -33,6 +43,7 @@ public interface AdMapper {
     @Mapping(target = "phone", source = "adsAuthor.phone")
     @Mapping(target = "email", source = "adsAuthor.email")
 //    @Mapping(target = "image", source = "adsAuthor.image", qualifiedByName = "imageMapping")
+    @Mapping(target = "image", source = "image", qualifiedByName = "imageMapping")
     @Mapping(target = "pk", source = "id")
     FullAdDto toFullAdsDto(Ads entity);
 
@@ -41,6 +52,6 @@ public interface AdMapper {
         if (image == null) {
             return null;
         }
-        return "/ads/image/" +image.getId();
+        return "/ads/image/" + image.getId();
     }
 }
