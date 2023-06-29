@@ -33,7 +33,10 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads"
+            "/ads",
+            "/ads/image/*",
+            "/users/image/*"
+
     };
 
 //    private static final String[] AUTH_WHITELIST = {
@@ -69,7 +72,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeHttpRequests(auth -> auth.mvcMatchers(AUTH_WHITELIST).permitAll()
-                        .antMatchers(HttpMethod.OPTIONS).permitAll()
+//                       .antMatchers(HttpMethod.OPTIONS).permitAll()
                         .mvcMatchers("/ads/**", "/users/**").authenticated())
                 .cors().and().httpBasic(withDefaults());
         return http.build();
