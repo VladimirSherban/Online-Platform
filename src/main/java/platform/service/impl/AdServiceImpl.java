@@ -56,7 +56,6 @@ public class AdServiceImpl implements AdService {
     public void updateAdsImage(int id, MultipartFile image) {
 
         logger.info("Метод обновления картинки у Объявления по его id");
-//        Ads ads = adRepository.findById(id); не получилось, жаль этого добряка...
         Ads ads = getAdsById(id);
         securityUtils.checkPermissionToAds(ads);
         imageRepository.delete(ads.getImage());
