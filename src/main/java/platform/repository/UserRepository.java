@@ -8,8 +8,8 @@ import platform.model.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
-    Optional<User> findById(Integer id);
+public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
+
     Optional<User> findByEmail(String email);
 
     boolean existsByEmailContains(String email);

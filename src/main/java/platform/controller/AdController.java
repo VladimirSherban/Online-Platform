@@ -70,6 +70,12 @@ public class AdController {
         return ResponseEntity.ok(adMapper.toDto(adservice.addAds(adCreateDto, adsImage, authentication.getName())));
     }
 
+    @Operation(summary = "Сменить картинку объявления по id", operationId = "updateAdImage",
+            responses = {@ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
         adservice.updateAdsImage(id, image);
@@ -144,7 +150,7 @@ public class AdController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @PostMapping("/{ad_pk}/comments")
     public ResponseEntity<CommentDto> addComment(@PathVariable("ad_pk") int adPk,
-                                                      @RequestBody @Valid CommentDto adCommentDto) throws Exception {
+                                                 @RequestBody @Valid CommentDto adCommentDto) throws Exception {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(commentMapper.toDto(adservice.addComment(adPk, adCommentDto, authentication.getName())));
@@ -216,7 +222,7 @@ public class AdController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @DeleteMapping("/{ad_pk}/comments/{id}")
     public ResponseEntity<HttpStatus> deleteComment(@PathVariable("ad_pk") int ad_pk,
-                                                       @PathVariable("id") int id) {
+                                                    @PathVariable("id") int id) {
         adservice.deleteComment(ad_pk, id);
         return ResponseEntity.ok(HttpStatus.OK);
     }

@@ -26,7 +26,7 @@ public class Image {
     private byte[] image;
 
     @Column(name = "file_size")
-    private long fileSize;
+    private Long fileSize;
 
     @Column(name = "media_type")
     private String mediaType;
