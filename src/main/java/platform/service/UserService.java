@@ -37,9 +37,9 @@ public interface UserService {
     @SneakyThrows
     String updateUserImage(MultipartFile image, String email);
 
-    User getUserById(long id);
+    User getUserById(Integer id);
 
     User getUsers(String email);
 
-    User updateRole(long id, Role role);
+    User updateRole(Integer id, Role role);
 }

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,32 +38,11 @@ public class WebSecurityConfig {
 
     };
 
-//    private static final String[] AUTH_WHITELIST = {
-//            "/swagger-resources/**",
-//            "/swagger-ui.html",
-//            "/v3/api-docs",
-//            "/webjars/**",
-//            "/login",
-//            "/register",
-//            "/path/t*/*",
-//            "/users/avatar/*", // считаю. что эндпоинт должен быть без авторизации
-//            "/ads",
-//            "/ads/filter",
-//            "/ads/*/comments",
-//            "/ads/*/comments/*",
-//            "/ads/image/*",
-//            "/actuator/**" /*TODO  можно закрыть за суперюзером*/
-//    };
 
     @Primary
     @Bean
     public AuthenticationManagerBuilder configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetails);
-//                .dataSource(dataSource)
-//                .usersByUsernameQuery(
-//                        "select email as username, password, 'true' from users where email=?")
-//                .authoritiesByUsernameQuery(
-//                        "select email as username, role as authority from users where email=?");
 
         return auth;
     }
@@ -72,7 +50,6 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeHttpRequests(auth -> auth.mvcMatchers(AUTH_WHITELIST).permitAll()
-//                       .antMatchers(HttpMethod.OPTIONS).permitAll()
                         .mvcMatchers("/ads/**", "/users/**").authenticated())
                 .cors().and().httpBasic(withDefaults());
         return http.build();

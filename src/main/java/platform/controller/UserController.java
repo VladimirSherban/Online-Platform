@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -133,9 +132,8 @@ public class UserController {
                 userMapper.toDto(userService.updateUser(userDto, authentication.getName())));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}/updateRole")
-    public ResponseEntity<UserDto> updateRole(@PathVariable("id") long id, Role role) {
+    public ResponseEntity<UserDto> updateRole(@PathVariable("id") Integer id, Role role) {
         UserDto userDto = userMapper.toDto(userService.updateRole(id, role));
         return ResponseEntity.ok(userDto);
     }

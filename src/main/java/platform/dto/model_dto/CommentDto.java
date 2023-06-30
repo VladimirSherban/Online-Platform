@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDto {
 
-    private int pk;
+    private Integer pk;
     private User author;
     private String authorImage;
     private String authorFirstName;

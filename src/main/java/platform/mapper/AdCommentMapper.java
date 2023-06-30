@@ -1,7 +1,6 @@
 package platform.mapper;
 
 
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -10,9 +9,9 @@ import platform.model.Comment;
 import platform.model.Image;
 
 @Mapper(componentModel = "spring")
-public interface AdCommentMapper{
+public interface AdCommentMapper {
     @Mapping(target = "commentAuthor", ignore = true)
-    @Mapping(target = "id", source="pk")
+    @Mapping(target = "id", source = "pk")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "ad", ignore = true)
     Comment toEntity(CommentDto dto);
@@ -20,7 +19,7 @@ public interface AdCommentMapper{
     @Mapping(target = "author", source = "ad.adsAuthor")
     @Mapping(target = "pk", source = "id")
     @Mapping(target = "createdAt", source = "entity.createdAt")
-    @Mapping(target = "authorImage", source = "commentAuthor.image",qualifiedByName = "mapImageToString")
+    @Mapping(target = "authorImage", source = "commentAuthor.image", qualifiedByName = "mapImageToString")
     @Mapping(target = "authorFirstName", source = "commentAuthor.firstName")
     CommentDto toDto(Comment entity);
 
@@ -29,6 +28,6 @@ public interface AdCommentMapper{
         if (image == null) {
             return null;
         }
-        return "C:/Users/User/Documents/IdeaProjects/OnlinePlatform/images" + image.getId(); // Замените "/path/to/image/" на ваш путь к изображениям
+        return "/users/image/" + image.getId(); // Замените "/path/to/image/" на ваш путь к изображениям
     }
 }

@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(long id) {
+    public User getUserById(Integer id) {
         //чтоб в контроллере вернуть через дто
         return userRepository.findById(id).orElseThrow();
 
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateRole(long id, Role role) {
+    public User updateRole(Integer id, Role role) {
         //чтоб в контроллере смогли поставить админку обычному пользователю
         User user = getUserById(id);
         user.setRole(role);
