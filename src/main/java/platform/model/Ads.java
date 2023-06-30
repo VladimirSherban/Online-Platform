@@ -3,7 +3,6 @@ package platform.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Setter
 @Getter
@@ -22,7 +21,7 @@ public class Ads {
     private String description;
 
     @Column(name = "price")
-    private int price;
+    private Integer price;
 
     @Column(name = "title")
     private String title;

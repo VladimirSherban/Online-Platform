@@ -15,6 +15,7 @@ public interface AdService {
 
     /**
      * Обновляем картинку по id Объявления
+     *
      * @param id
      * @param image
      */
@@ -25,6 +26,7 @@ public interface AdService {
 
     /**
      * Метод добавления объявления
+     *
      * @param adCreateDto
      * @param adsImage
      * @param Email
@@ -36,6 +38,7 @@ public interface AdService {
 
     /**
      * Показывает объявления авторизованного польхователя
+     *
      * @param Email
      * @return Collection<Ads>
      * </Ads>
@@ -43,7 +46,6 @@ public interface AdService {
     Collection<Ads> getMyAds(String Email);
 
     /**
-     *
      * @param id
      * @return {@link FullAdDto}
      * @throws Exception
@@ -52,6 +54,7 @@ public interface AdService {
 
     /**
      * Метод получения комментариев
+     *
      * @param adPk
      * @return Collection<Comment>
      * </Comment>
@@ -60,6 +63,7 @@ public interface AdService {
 
     /**
      * Получить комментарий по id
+     *
      * @param adPk
      * @param id
      * @return
@@ -68,6 +72,7 @@ public interface AdService {
 
     /**
      * Обновить Объявление
+     *
      * @param adId
      * @param adCreateDto
      * @return {@link Ads}
@@ -77,6 +82,7 @@ public interface AdService {
 
     /**
      * Удаление объявления по id
+     *
      * @param adId
      * @return {@link Ads}
      */
@@ -85,6 +91,7 @@ public interface AdService {
 
     /**
      * Удалить коментарий по id
+     *
      * @param adPk
      * @param id
      * @return {@link Comment}
@@ -94,6 +101,7 @@ public interface AdService {
 
     /**
      * Редактирование комментария по id
+     *
      * @param adPk
      * @param id
      * @param commentUpdated
@@ -104,6 +112,7 @@ public interface AdService {
 
     /**
      * Добавление нового комментария
+     *
      * @param adPk
      * @param adCommentDto
      * @param Email

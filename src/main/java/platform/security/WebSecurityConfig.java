@@ -1,24 +1,29 @@
 package platform.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
+import platform.security.service.impl.UserDetailsServiceImpl;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Конфигурация безопастности для SpringSecurity
+ * Более тонкие настройки сделаны в CRUD сервисах для контроллеров, анатациями в контроллерах, а так же PermissionService
+ */
 @Configuration
+@EnableWebSecurity
+@AllArgsConstructor
 public class WebSecurityConfig {
-    @Autowired
-    private DataSource dataSource;
+
+    private final UserDetailsServiceImpl userDetails;
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -27,45 +32,31 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads"
+            "/ads",
+            "/ads/image/*",
+            "/users/image/*"
+
     };
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Primary
     @Bean
-    public AuthenticationManagerBuilder authenticationManagerBuilder_(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery(
-                        "select email as username, password, 'true' from users where email=?")
-                .authoritiesByUsernameQuery(
-                        "select email as username, authority from users where email=?");
+    public AuthenticationManagerBuilder configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetails);
 
         return auth;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf()
-                .disable()
-                .authorizeHttpRequests((authz) ->
-                        authz
-                                .antMatchers(HttpMethod.OPTIONS).permitAll()
-                                .mvcMatchers(AUTH_WHITELIST).permitAll()
-                                .mvcMatchers(
-                                        "/ads/**",
-                                        "/users/**"
-                                )
-                                .authenticated()
-                )
-                .httpBasic(withDefaults())
-                .cors()
-        ;
+        http.csrf().disable().authorizeHttpRequests(auth -> auth.mvcMatchers(AUTH_WHITELIST).permitAll()
+                        .mvcMatchers("/ads/**", "/users/**").authenticated())
+                .cors().and().httpBasic(withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

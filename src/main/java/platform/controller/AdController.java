@@ -23,7 +23,6 @@ import platform.mapper.AdCommentMapper;
 import platform.mapper.AdMapper;
 import platform.model.Ads;
 import platform.model.Comment;
-import platform.repository.AdsRepository;
 import platform.service.AdService;
 import platform.service.ImageService;
 
@@ -34,7 +33,6 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/ads")
-
 public class AdController {
     private final AdService adservice;
     private final AdMapper adMapper;
@@ -52,7 +50,7 @@ public class AdController {
             tags = "ADS")
     @GetMapping
     public ResponseWrapper<AdsDto> getAllAds() {
-        return ResponseWrapper.of(adMapper.toDto(adservice.getAllAds()));
+        return ResponseWrapper.of(adservice.getAllAds().stream().map(adMapper::toDto).toList());
     }
 
 
@@ -72,6 +70,12 @@ public class AdController {
         return ResponseEntity.ok(adMapper.toDto(adservice.addAds(adCreateDto, adsImage, authentication.getName())));
     }
 
+    @Operation(summary = "Сменить картинку объявления по id", operationId = "updateAdImage",
+            responses = {@ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "404",
+                            description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = {}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable("id") int id, @NotNull @RequestBody MultipartFile image) {
         adservice.updateAdsImage(id, image);
@@ -90,7 +94,7 @@ public class AdController {
     @GetMapping("/me")
     public ResponseWrapper<AdsDto> getMyAds() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseWrapper.of(adMapper.toDto(adservice.getMyAds(authentication.getName())));
+        return ResponseWrapper.of(adservice.getMyAds(authentication.getName()).stream().map(adMapper::toDto).toList());
     }
 
 
@@ -118,7 +122,7 @@ public class AdController {
                             description = "Not Found")}, tags = "ADS")
     @GetMapping("/{ad_pk}/comments")
     public ResponseWrapper<CommentDto> getComments(@PathVariable("ad_pk") int adPk) {
-        return ResponseWrapper.of(commentMapper.toDto(adservice.getComments(adPk)));
+        return ResponseWrapper.of(adservice.getComments(adPk).stream().map(commentMapper::toDto).toList());
     }
 
     @Operation(summary = "Получить комментарии по id", operationId = "getAdsComment",
@@ -146,7 +150,7 @@ public class AdController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @PostMapping("/{ad_pk}/comments")
     public ResponseEntity<CommentDto> addComment(@PathVariable("ad_pk") int adPk,
-                                                      @RequestBody @Valid CommentDto adCommentDto) throws Exception {
+                                                 @RequestBody @Valid CommentDto adCommentDto) throws Exception {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(commentMapper.toDto(adservice.addComment(adPk, adCommentDto, authentication.getName())));
@@ -218,7 +222,7 @@ public class AdController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = {})}, tags = "ADS")
     @DeleteMapping("/{ad_pk}/comments/{id}")
     public ResponseEntity<HttpStatus> deleteComment(@PathVariable("ad_pk") int ad_pk,
-                                                       @PathVariable("id") int id) {
+                                                    @PathVariable("id") int id) {
         adservice.deleteComment(ad_pk, id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -240,7 +244,4 @@ public class AdController {
                 adPk, id, commentMapper.toEntity(adCommentDto))));
 
     }
-
-
-
 }

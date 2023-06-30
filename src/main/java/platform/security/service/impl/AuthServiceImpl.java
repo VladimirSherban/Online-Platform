@@ -13,6 +13,8 @@ import platform.security.dto.Role;
 import platform.security.service.AuthService;
 import platform.service.UserService;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,12 +29,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean login(String userName, String password) throws Exception {
-
         logger.info("Логинимся");
-        User user = userRepository.findByEmail(userName).orElseThrow(() ->
-                new Exception("Пользователь с таким именем не зарегистрирован"));
-        return encoder.matches(password, user.getPassword());
-
+        Optional<User> user = userRepository.findByEmail(userName);
+        if (user.isEmpty()) {
+            throw new Exception("Пользователь с таким именем не зарегистрирован");
+        }
+        return encoder.matches(password, user.get().getPassword());
     }
 
     @Override

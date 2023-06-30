@@ -1,9 +1,6 @@
 package platform.dto.model_dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
-import javax.validation.Valid;
 
 @Getter
 @Setter
@@ -12,11 +9,11 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AdsDto {
 
-    private int pk;
-    private int author;
-    private int price;
+    private Integer pk;
+    private Integer author;
+    private Integer price;
     private String title;
-    private String description;
+    //    private String description;
     private String image;
 
 }

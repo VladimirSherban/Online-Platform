@@ -1,21 +1,33 @@
 package platform.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import platform.dto.model_dto.CommentDto;
 import platform.model.Comment;
+import platform.model.Image;
 
-@Mapper
-public interface AdCommentMapper  extends MapperSchema<CommentDto, Comment>{
-    @Mapping(target = "author", ignore = true)
-    @Mapping(target = "id", source="pk")
+@Mapper(componentModel = "spring")
+public interface AdCommentMapper {
+    @Mapping(target = "commentAuthor", ignore = true)
+    @Mapping(target = "id", source = "pk")
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "ad", ignore = true)
     Comment toEntity(CommentDto dto);
 
-    @Mapping(target = "author", source = "author.id")
-    @Mapping(source = "id", target = "pk")
+    @Mapping(target = "author", source = "ad.adsAuthor")
+    @Mapping(target = "pk", source = "id")
     @Mapping(target = "createdAt", source = "entity.createdAt")
-    @Mapping(target = "authorImage", source = "image")
-    @Mapping(target = "authorFirstName", source = "author.firstName")
+    @Mapping(target = "authorImage", source = "commentAuthor.image", qualifiedByName = "mapImageToString")
+    @Mapping(target = "authorFirstName", source = "commentAuthor.firstName")
     CommentDto toDto(Comment entity);
+
+    @Named("mapImageToString")
+    default String mapImageToString(Image image) {
+        if (image == null) {
+            return null;
+        }
+        return "/users/image/" + image.getId(); // Замените "/path/to/image/" на ваш путь к изображениям
+    }
 }

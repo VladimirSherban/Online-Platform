@@ -16,5 +16,6 @@ public class FullAdDto {
     private String title;
 
     private String email;
+    private String image;
 
 }

@@ -6,6 +6,7 @@ import java.util.Collection;
 
 /**
  * Решает проблему вывода коллекций через ResponseEntity
+ *
  * @param <A>
  */
 
@@ -15,15 +16,15 @@ import java.util.Collection;
 @ToString
 @AllArgsConstructor
 public class ResponseWrapper<A> {
-    private int count;
-    private Collection<A> result;
+    private Integer count;
+    private Collection<A> results;
 
     public static <A> ResponseWrapper<A> of(Collection<A> results) {
         ResponseWrapper<A> responseWrapper = new ResponseWrapper<>();
         if (results == null) {
             return responseWrapper;
         }
-        responseWrapper.result = results;
+        responseWrapper.results = results;
         responseWrapper.count = results.size();
         return responseWrapper;
     }

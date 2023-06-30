@@ -1,6 +1,6 @@
 package platform.security.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +17,10 @@ import javax.transaction.Transactional;
 @Service
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Transactional
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService, UserDetailsPasswordService {
-    private final UserRepository userRepository;
 
-    @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -35,7 +32,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserDetailsPa
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь по email не найден"));
     }
-
 
     @Override
     public UserDetails updatePassword(UserDetails userDetails, String newPassword) {

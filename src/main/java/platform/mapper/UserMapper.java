@@ -1,6 +1,6 @@
 package platform.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import platform.dto.CreateUserDto;
@@ -10,8 +10,8 @@ import platform.model.Image;
 import platform.model.User;
 
 
-@Mapper
-public interface UserMapper extends MapperSchema<UserDto, User> {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
     CreateUserDto toCreateUserDto(User entity);
 
